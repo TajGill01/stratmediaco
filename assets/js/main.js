@@ -251,7 +251,30 @@
       });
     }
   });
-  
+  document.addEventListener("DOMContentLoaded", function () {
+    const videos = document.querySelectorAll("video");
+
+    const lazyLoad = (video) => {
+      const source = video.querySelector("source");
+      if (source && source.dataset.src) {
+        source.src = source.dataset.src;
+        video.load(); // reloads the video with the new source
+      }
+    };
+
+    const observer = new IntersectionObserver((entries, obs) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          lazyLoad(entry.target);
+          obs.unobserve(entry.target);
+        }
+      });
+    });
+
+    videos.forEach(video => observer.observe(video));
+  });
+
+
   
 
 })();
